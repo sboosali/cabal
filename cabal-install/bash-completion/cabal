@@ -139,29 +139,76 @@ function _cabal_list_targets ()
 
 function _cabal_targets ()
 
-{
+(
+    shopt -s extglob
+
     local Completion
 
-    for Completion in "$@"; do
+    for Completion in "$@"
+    do
 
-        [ "$Completion" == new-build   ] && _cabal_list_targets              && break
-        [ "$Completion" == new-repl    ] && _cabal_list_targets              && break
-        [ "$Completion" == new-run     ] && _cabal_list_targets "executable" && break
-        [ "$Completion" == new-test    ] && _cabal_list_targets "test-suite" && break
-        [ "$Completion" == new-bench   ] && _cabal_list_targets "benchmark"  && break
-        [ "$Completion" == new-haddock ] && _cabal_list_targets              && break
+        case "$Completion" in
 
-        [ "$Completion" == new-install ] && _cabal_list_targets "executable" && break
-        # ^ Only complete for local packages (not all 1000s of remote packages).
+            build|v1-build|new-build|v2-build)
 
-        [ "$Completion" == build     ] && _cabal_list_targets "executable|test-suite|benchmark" && break
-        [ "$Completion" == repl      ] && _cabal_list_targets "executable|test-suite|benchmark" && break
-        [ "$Completion" == run       ] && _cabal_list_targets "executable"                      && break
-        [ "$Completion" == test      ] && _cabal_list_targets            "test-suite"           && break
-        [ "$Completion" == bench     ] && _cabal_list_targets                       "benchmark" && break
+                _cabal_list_targets "library|executable|test-suite|benchmark|foreign-library"
 
+                break
+                ;;
+
+            run|v1-run|new-run|v2-run)
+
+                _cabal_list_targets "executable"
+
+                break
+                ;;
+
+            test|v1-test|new-test|v2-test)
+
+                _cabal_list_targets "test-suite"
+
+                break
+                ;;
+
+            bench|v1-bench|new-bench|v2-bench)
+
+                _cabal_list_targets "benchmark"
+
+                break
+                ;;
+
+            repl|v1-repl|new-repl|v2-repl)
+
+                _cabal_list_targets "library|executable|test-suite|benchmark|foreign-library"
+
+                break
+                ;;
+
+            haddock|v1-haddock|new-haddock|v2-haddock)
+
+                _cabal_list_targets "library|executable|test-suite|benchmark|foreign-library"
+
+                break
+                ;;
+
+            install|v1-install|new-install|v2-install)
+
+                _cabal_list_targets "executable"
+                # ^ Only complete for local packages (not all 1000s of remote packages).
+
+                break
+                ;;
+
+            *)
+
+                continue
+                ;;
+
+         esac
+                          
+        
     done
-}
+)
 
 # NOTES
 #
